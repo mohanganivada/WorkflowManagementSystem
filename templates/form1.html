@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+<head>
+<link rel="stylesheet"  href="{% static 'assets/css/resume.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <title>Resume filling form </title> 
+</head>
+<body>
+    <div class="main-container">
+        <form action="saved" id="myform" method="POST">{%csrf_token%}
+            <input type="hidden" name="userID" value="{{userID}}">
+            <input type="hidden" id="usertype" name="usertype" value={{personalInfo.1}}><br>
+            <input type="hidden" id="userrole" name="userrole" value={{personalInfo.2}}><br>
+            <input type="hidden" name="resumeId" value="{{resumeId}}">
+            <input type="text" id="search" style="width:40%; font-size:20px;" name="search" placeholder="Search.." >
+            <!-- <button onclick="myFunction()" type="button">search</button> -->
+                <div class="details ">
+                    <!-- <span class="title"><b>Personal Details</b></span> -->
+                    <h4>Personal Details</h4>
+                        <div class="fields">
+                            <div class="input-field">
+                                <span class="labeltext">First Name:</span>
+                                <input type="text" id="fname" name="fname" placeholder="Enter your First name" value="{{personalInfo.4}}" >
+                            </div>
+                            <div class="input-field"><span class="labeltext">Middle Name:</span>
+                                <input type="text" id="mname" name="mname" value="{{personalInfo.5}}" placeholder="Enter your Middle name">
+                            </div>
+                            <div class="input-field"><span class="labeltext">Last Name:</span>
+                                <input type="text" id="lname" name="lname" value="{{personalInfo.3}}" placeholder="Enter your Last name">
+                            </div>
+                            <div class="input-field"><span class="labeltext">Email Id:</span>
+                                <input type="text" id="email" value="{{personalInfo.6}}" placeholder="Enter your email" name="email" data-toggle="tooltip" data-placement="top" width="20px" height="30px"title="enter email in @gmail.com format......Gmail is a free email service provided by Google. As of 2019, it had 1.5 billion active users worldwide. A user typically accesses Gmail in a web browser or the official mobile app. Google also supports the use of email clients via the POP and IMAP protocols." > 
+                                  
+                            </div>
+                            <div class="input-field"><span class="labeltext">Mobile no:</span>
+                                <input type="number" id="mobile" value="{{personalInfo.7}}" placeholder="Enter mobile number" name="mobileNumber">
+                            </div>
+                            <div class="input-field"><span class="labeltext">Alterante mobile no:</span>
+                                <input type="number" id="almobile" value="{{personalInfo.8}}" placeholder="Enter alternate mobile number" name="alternateMobile">
+                            </div>
+                        </div>
+                </div>
+                <hr>
+
+                <div class="details" id="educationDiv">
+                    <!-- <span class="title"><b>Education</b></span> -->
+                    <h4>Education</h4>
+                    <button type="button" class="btn-xs-xs btn-primary" onclick="addMore('educationDiv','educationChild',educationFields)">Add more</button>
+                    {%for education in educations%}
+                        <div id="educationChild">
+                            <div class="fields" id="edelement">
+                                <input type="hidden" name="educationID" value="{{education.0}}">
+                                <div class="input-field">
+                                    <input type="text" value="{{education.2}}" placeholder="Enter your educationName" name="educationName" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text"  value="{{education.3}}" placeholder="Enter your institutionName" name="institutionName" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="{{education.4}}" placeholder="Enter your institutionCity " name="institutionCity" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="{{education.5}}" placeholder="Enter your institutionCountry " name="institutionCountry" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="{{education.6}}" placeholder="Enter your Grade/Percentage " name="gradePercentage" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="{{education.7}}" placeholder="Enter Start year " name="educationStartYear" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="{{education.8}}" placeholder="Enter End year " name="educationStartYear" >                        
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" value="{{education.9}}" placeholder="Enter Mode of education " name="educationMode" >                        
+                                </div>
+                                
+                            </div>
+                            <button type="button" class="btn-xs btn-danger" onclick="deleteExisting(this,'tbl_user_education','education_id','{{education.0}}')">Delete</button>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <hr>
+
+                <div class="details" id="experienceDiv">
+                    <!-- <span class="title"><b>Work Experience</b></span> -->
+                    <h4>Work Experience</h4>
+                    <button type="button" class="btn-xs btn-primary" onclick="addMore('experienceDiv','experienceChild',experienceFields)">Add more</button>
+
+                    {%for experience in experiences%}
+                    <div class="fields" id="experienceChild">
+                        <input type="hidden" name="experienceID" value="{{experience.0}}">
+                        <div class="input-field">
+                            <input type="text" value="{{experience.2}}" placeholder="Enter your company name" name="experienceCompany" >
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" value="{{experience.3}}" placeholder="Enter your designation" name="experienceDesignation" >
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" value="{{experience.4}}" placeholder="Start date" name="experienceStart" >
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" value="{{experience.5}}" placeholder="End date" name="experienceEnd" >
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" value="{{experience.6}}" placeholder="Experience Type" name="experienceType" >
+                        </div>
+                        <div class="input-field">
+                            <textarea placeholder="use keyword like............" style="text-align: left;" rows="5" cols="50" name="company description"></textarea>
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteExisting(this,'tbl_user_experience','user_exp_id','{{experience.0}}')">Delete</button>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+                <hr>
+
+                <div class="details" id="projectDiv">
+                    <!-- <span class="title"><b>Projects</b></span> -->
+                    <h4>Projects</h4>
+                    <button type="button" class="btn-xs btn-primary" onclick="addMore('projectDiv','projectChild',projectFields)">Add more</button>
+                    <!-- <button type="button" class="btn btn-primary" onclick="addMore('projectDiv','projectChild',projectFields)">Add more</button> -->
+                    {%for project in projects%}
+                    <div class="fields" id="projectChild">
+                        <input type="hidden" name="projectID" value="{{project.0}}">
+                        <div class="input-field">
+                            <input type="text" value="{{project.2}}" placeholder="Enter your project title" name="projectTitle" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{project.3}}" placeholder="Enter your Roles and Responsibilities" name="projectRolesResp" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{project.4}}" placeholder="Enter technolgy you worked on" name="projectTechnology" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{project.5}}" placeholder="Enter your project description" name="projectDescription" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{project.6}}" placeholder="Enter your project client" name="projectClient" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{project.7}}" placeholder="Enter your project Start Date" name="projectStart" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{project.8}}" placeholder="Enter your project End Date" name="projectEnd" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteExisting(this,'tbl_user_projects','user_project_id','{{project.0}}')">Delete</button>
+                    </div> 
+                    {% endfor %}
+                    
+                </div>
+                <hr>
+                <div class="details" id="activitiesDiv">
+                    <!-- <span class="title"><b>Activities</b></span> -->
+                    <h4>Activities</h4>
+                    <button type="button" class="btn-xs btn-primary" onclick="addMore('activitiesDiv','activitiesChild',activitiesFields)">Add more</button>
+                    
+                    {%for activity in activities%}
+                    <div class="fields" id="activitiesChild">
+                        <input type="hidden" name="activityID" value="{{activity.0}}">
+                        <div class="input-field">
+                            <input type="text" value="{{activity.2}}" placeholder="Enter your activity name" name="activityName" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.3}}" placeholder="Enter your activity description" name="activityDescription" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.4}}" placeholder="Enter awards won" name="awards" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.5}}" placeholder="Enter papers submitted" name="papersSubmitted" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.6}}" placeholder="Enter any other information" name="anyOtherInformation" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.7}}" placeholder="Enter languages known" name="languagesKnown" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.8}}" placeholder="Enter known tools" name="knownTools" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.9}}" placeholder="Enter known Computer Languages" name="knownComputerLanguages" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{activity.10}}" placeholder="Enter activities" name="activitiesCol" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteExisting(this,'tbl_user_activities','user_activity_id','{{activity.0}}')">Delete</button>
+                    </div> 
+                    {% endfor %} 
+                </div>
+
+                <hr>
+
+                <div class="details" id="socialDiv">
+                    <!-- <span class="title"><b>Social Media</b></span> -->
+                    <h4>Social Media</h4>
+                    <button type="button" class="btn-xs btn-primary" onclick="addMore('socialDiv','socialChild',socialFields)">Add more</button>
+                    
+                    {%for socialmedia in socialmedias%}
+                    <div class="fields" id="socialChild">
+                        <input type="hidden" name="socialmediaID" value="{{socialmedia.0}}">
+                        <div class="input-field">
+                            <input type="text" value="{{socialmedia.2}}" placeholder="Enter socialmedia description" name="socialMediaDescription" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" value="{{socialmedia.3}}" placeholder="Enter socialmedia link" name="socialMediaLink" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteExisting(this,'tbl_user_scocial_media','user_SocMedia_id','{{socialmedia.0}}')">Delete</button>
+                    </div>
+                    {% endfor %} 
+                </div>
+                
+                <hr>
+
+                <div class="details " id="skillDiv">
+                    <!-- <span class="title"><b>Skills/Certificate</b></span> -->
+                    <h4>Skills/Certificate</h4>
+                    <button type="button" class="btn-xs btn-primary" onclick="addMore('skillDiv','skillChild',skillFields)">Add more</button>
+                    
+                    {%for technicalskill in technicalskills%}
+                    <div class="fields" id="skillChild">
+                        <input type="hidden" name="techSkillId" value="{{technicalskill.0}}">
+                        <div class="input-field">
+                            <input type="text" name="techSkillDescription" placeholder="enter skill name" value="{{technicalskill.2}}">
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteExisting(this,'tbl_user_tech_skills','Tech_Skills_id','{{technicalskill.0}}')">Delete</button>
+                    </div> 
+                    {% endfor %}
+                </div>
+
+                <hr>
+
+                <div class="details" id="professionalDiv">
+                    <!-- <span class="title"><b>Professional Summary</b></span> -->
+                    <h4>Professional Summary</h4>
+                    {%for professionalsummary in professionalsummaries%}
+                    <div class="fields" id="professionalChild">
+                        <input type="hidden" name="profSummId" value={{professionalsummary.0}}>
+                        <div class="input-field">
+                            <textarea name="profSummary" id="profSummary" cols="100" rows="20" >{{professionalsummary.2}}</textarea>
+                        </div>
+                    </div> 
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn-xs btn-success" onclick=submitForm("save")>save form </button>
+                <button type="button" class="btn-xs btn-success" onclick=submitForm("submit")>Final Submit</button>
+        </form>
+
+    <script>
+        function submitForm(temp){
+            if(temp=="save"){
+                var element = document.createElement("INPUT");
+                element.setAttribute("type", "hidden");
+                element.setAttribute("value","savedByUser");
+                element.setAttribute("name","typeOfSave");
+                document.getElementById('myform').appendChild(element);
+            }
+            else if(temp=="submit"){
+                var element = document.createElement("INPUT");
+                element.setAttribute("type", "hidden");
+                element.setAttribute("value","submitedByUser");
+                element.setAttribute("name","typeOfSave");
+                document.getElementById('myform').appendChild(element);
+            }
+            document.getElementById('myform').submit();
+        }
+    </script>
+
+    <script>
+        let educount={{educations|length}};
+        var educationFields = `<div class="fields" id="edelement">
+                        <input type="hidden" name="educationID" value="new">
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your educationName" name="educationName" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"   placeholder="Enter your institutionName" name="institutionName" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your institutionCity " name="institutionCity" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your institutionCountry " name="institutionCountry" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your Grade/Percentage " name="gradePercentage" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter Start year " name="educationStartYear" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter End year " name="educationStartYear" >                        
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter Mode of education " name="educationMode" >                        
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteNew(this)">Delete</button>
+                </div>
+                ` ;
+        let experienceCount={{experiences|length}};
+        let experienceFields=`
+                    <div class="fields" >
+                        <input type="hidden" name="experienceID" value="new">
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your company name" name="experienceCompany" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your designation" name="experienceDesignation" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Start date" name="experienceStart" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="End date" name="experienceEnd" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" placeholder="Experience Type" name="experienceType" >
+                        </div>
+                        <div class="input-field">
+                            <textarea placeholder="use keyword like............" style="text-align: left;" rows="5" cols="50" name="company description"></textarea>
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteNew(this)">Delete</button>
+                    </div>
+                            `;
+        let projectCount={{projects|length}};
+        let projectFields=`
+                    <div class="fields" >
+                        <input type="hidden" name="projectID" value="new">
+                        <div class="input-field">
+                            <input type="text" placeholder="Enter your project title" name="projectTitle" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your Roles and Responsibilities" name="projectRolesResp" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter technolgy you worked on" name="projectTechnology" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your project description" name="projectDescription" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your project client" name="projectClient" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your project Start Date" name="projectStart" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your project End Date" name="projectEnd" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteNew(this)">Delete</button>
+                    </div> `;
+
+        let activitiesCount={{activities|length}};
+        let activitiesFields=`
+                    <div class="fields" >
+                        <input type="hidden" name="activityID" value="new">
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your activity name" name="activityName" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter your activity description" name="activityDescription" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter awards won" name="awards" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter papers submitted" name="papersSubmitted" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter any other information" name="anyOtherInformation" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter languages known" name="languagesKnown" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter known tools" name="knownTools" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter known Computer Languages" name="knownComputerLanguages" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text"  placeholder="Enter activities" name="activitiesCol" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteNew(this)">Delete</button>
+                    </div> 
+                    `;
+        let socialmediaCount={{socialmedias|length}};
+        let socialFields=`
+                    <div class="fields" >
+                        <input type="hidden" name="socialmediaID" value="new">
+                        <div class="input-field">
+                            <input type="text" placeholder="Enter socialmedia description" name="socialMediaDescription" >
+                        </div>
+                        <div class="input-field">
+                            <input type="text" placeholder="Enter socialmedia link" name="socialMediaLink" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteNew(this)">Delete</button>
+                    </div>`;
+        let techskillCount={{technicalskills|length}};
+        let skillFields=`
+                    <div class="fields" id="skillChild">
+                        <input type="hidden" name="techSkillId" value="new">
+                        <div class="input-field">
+                            <input type="text" name="techSkillDescription" placeholder="enter skill name" >
+                        </div>
+                        <button type="button" class="btn-xs btn-danger" onclick="deleteNew(this)">Delete</button>
+                    </div> `;
+
+        let profCount={{professionalsummaries|length}};
+        let professionalFields=`
+                    <div class="fields" id="professionalChild">
+                        <input type="hidden" name="profSummId" value="new">
+                        <div class="input-field">
+                            <textarea name="profSummary" id="profSummary" cols="100" rows="20" placeholder="please describe your professional journey"></textarea>
+                        </div>
+                    </div> `;
+                    
+
+    </script>
+
+    <script>
+
+        // TO add new field sections
+        function addMore(parentDiv,childDiv,Fields){
+            const newElement= document.createElement("div");
+            newElement.setAttribute("id",childDiv);
+            newElement.innerHTML= Fields;
+            document.getElementById(parentDiv).appendChild(newElement);
+            if(parentDiv=="educationDiv"){
+                educount++;
+            }
+            if(parentDiv=="experienceDiv"){
+                experienceCount++;
+            }
+            if(parentDiv=="projectDiv"){
+                projectCount++;
+            }
+            if(parentDiv=="activitiesDiv"){
+                activitiesCount++;
+            }
+            if(parentDiv=="socialDiv"){
+                socialmediaCount++;
+            }
+            if(parentDiv=="skillDiv"){
+                techskillCount++;
+            }
+            if(parentDiv=="professionalDiv"){
+                profCount++;
+            }
+            
+        }
+
+        //delete newly added fields
+        function deleteNew(temp){
+            temp.parentElement.remove();
+
+        }
+
+        //delete row from database for existing fields
+        function deleteExisting(currentElement,tableName,columnName,Id){
+            $.ajax({
+                type: 'POST',
+                url: "/ajax",
+                data: {tableName,columnName,Id,csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: function (response) {
+                    if(response.status=='deleted'){
+
+                        if(tableName=="tbl_user_education"){
+                            educount--;
+                        }
+                        if(tableName=="tbl_user_experience"){
+                            experienceCount--;
+                        }
+                        if(tableName=="tbl_user_projects"){
+                            projectCount--;
+                        }
+                        if(tableName=="tbl_user_activities"){
+                            activitiesCount--;
+                        }
+                        if(tableName=="tbl_user_scocial_media"){
+                            socialmediaCount--;
+                        }
+                        if(tableName=="tbl_user_tech_skills"){
+                            techskillCount--;
+                        }
+                        if(tableName=="tbl_user_prof"){
+                            profCount--;
+                        }
+
+                        currentElement.parentElement.remove();
+                        addDefault()
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script>
+        //on page load functions
+        function addDefault(){
+            if(educount==0){
+                addMore("educationDiv","educationChild",educationFields)
+            }
+            if(experienceCount==0){
+                addMore('experienceDiv','experienceChild',experienceFields)
+            }
+            if(projectCount==0){
+                addMore('projectDiv','projectChild',projectFields)  
+            }
+            if(activitiesCount==0){
+                addMore('activitiesDiv','activitiesChild',activitiesFields)
+            }
+            if(socialmediaCount==0){
+                addMore('socialDiv','socialChild',socialFields)
+            }
+            if(techskillCount==0){
+                addMore('skillDiv','skillChild',skillFields)  
+            }
+            if(profCount==0){
+                addMore('professionalDiv','professionalChild',professionalFields) 
+            }
+        }
+        addDefault()
+    </script>
+                
+          
+    

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <select id="selected">
+        <option>select</option>
+        <option value="100" onclick="passValue(100)" >srinivas</option>
+        <option value="101" onclick="passValue(101)" >sagar</option>
+    </select>
+    <button id="btn100">assign</button>
+    <button id="btn101">assign</button>
+
+    <script>
+        function passValue(temp){
+            var btn=document.getElementById('btn'+temp);
+            btn.removeAttribute("onclick");
+            btn.setAttribute("onclick",`assigned(${temp})`)
+        }
+
+        function assigned(temp){
+            console.log(temp)
+        }
+
+        $(function () {
+            $("#selected").live("change", function () {
+            $('#selected').blur();
+            });
+        });
+    </script>
+</body>
+</html>

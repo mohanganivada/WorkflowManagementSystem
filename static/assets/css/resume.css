@@ -1,0 +1,99 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body{
+        min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.main-container{
+        position: relative;
+    max-width: 1200px;
+    width: 100%;
+    border-radius: 25px;
+    padding: 30px;
+    margin: 80px 30px;
+    border: 3px solid black;
+    box-shadow: 5px 10px 22px 10px #888888;
+}
+.search:hover{
+    width:90%;
+}
+
+.main-container form .title{
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 6px 0;
+    color: #333;
+}
+.main-container form .fields{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+input:hover,select:hover{
+    background-color:lightgreen;
+    width:100%;
+}
+form .fields .input-field:hover{
+    width:40%;
+}
+form .fields .input-field{
+    display: flex;
+   /* width: calc(100% / 3 - 15px);*/
+    width:30%;
+    flex-direction: column;
+    margin: 4px 0;
+}
+.fields:hover{
+    background-color:gainsboro;
+}
+
+
+.input-field label{
+    font-size: 12px;
+    font-weight: 500;
+    color: #2e2e2e;
+}
+.input-field input, select{
+    width:80%;
+    outline: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    padding: 0 15px;
+    height: 42px;
+    margin: 8px 0;
+}
+.input-field one{
+    flex-grow: 3;
+}
+.title{
+    font-size: 40px;
+    
+}
+hr{
+    border-width: 2px;
+}
+.box{
+    display:flex;
+    flex-direction: row;
+    column-gap: 10px;
+  }
+  .boxele{
+    border: 1px solid black;
+    width:150px;
+  }
+
+ 
+  

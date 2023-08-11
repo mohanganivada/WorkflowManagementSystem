@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static%}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <title>Welcome to cview</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">cview</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+      </ul>
+      <button class="btn btn-outline-danger my-2 my-sm-0" type="button"
+        onclick="location.href = 'http://127.0.0.1:8000';">Logout</button>
+    </div>
+  </nav>
+
+  <div class="activities">
+    <div class="d-flex justify-content-center mt-4">
+      <h4>Status</h4>
+    </div>
+    <div class="status border border-info rounded-end m-2">
+
+      <div class="package" id="package" style="display: none;">
+        <div class=" d-flex justify-content-center">
+          <h5 class="m-3">Please choose a package</h5>
+
+          <select name="packageId" id="packageId" class="btn btn-outline-primary m-2">
+            <option value="432">Resume services 0-1 experience [3000-/]</option>
+            <option value="433">Resume services 1-5 experience</option>
+            <option value="434">Resume services 5-10 experience</option>
+            <option value="435">Resume services 10+ experience</option>
+            <option value="436">Student-Undergraduate</option>
+            <option value="437">Student-postgraduate</option>
+            <option value="438">Student-phd/doctorate/mba</option>
+            <option value="439">visa application </option>
+          </select>
+          <input type="hidden" name="userId" value="{{userId}}">
+          <button class="btn btn-success m-2" onclick="purchase()">purchase</button>
+        </div>
+      </div>
+
+      <div class="form" id="form" style="display: none;">
+        <div class=" d-flex justify-content-center">
+          <h5 class="m-3">Form Filling</h5>
+          <form action="/form1" method="POST">{%csrf_token%} <input type="hidden" id="userId" name="userId"
+              value="{{userId}}"> <input type="hidden" name="resumeId" id="resumeId" value="{{resume.0}}">
+            <button class="btn btn-primary m-2" type="submit">Edit</button>
+            <button class="btn btn-success m-2">view</button>
+          </form>
+        </div>
+      </div>
+
+
+      <div id="progress" style="display: none;">
+        <div class=" d-flex justify-content-center">
+          <h5 class="m-3">In progress</h5>
+          <button class="btn btn-warning m-2">Request a call</button>
+        </div>
+        <div class="oldResume d-flex justify-content-center">
+          <h6>Do you have any old resumes:- </h6>
+          <form  method="POST" action="/uploadcv" enctype="multipart/form-data" class="pb-2" id="resumeForm">  {% csrf_token %}
+            <input type="hidden" name="userId" value="{{userId}}">
+            <input type="hidden" name="resumeId" id="resumeId" value="{{resume.0}}">
+            <p><input type = "file" name = "UserCV" id="UserCV"/></p>
+            <button class="btn btn-outline-success">upload</button>
+          </form>
+        </div>
+        
+      </div>
+
+      <div class="preview" id="preview" style="display: none;">
+        <div class="preview justify-content-center">
+          <h5 class="m-3">Preview</h5>
+          <!-- <button class="btn btn-info m-2"  value="{{userId}}" onclick="viewPdf({{userId}})">View</button> -->
+          <button class="btn btn-success m-2" onclick="acceptResume()">Accept</button>
+          <button class="btn btn-warning m-2" id="changesBtn" value="0" onclick="hideDisplay('commentsDiv')">Request changes</button>
+          <br>
+          <br>
+          <div class="commentsDiv" id="commentsDiv" style="display: none;">
+            <textarea name="comments" id="comments" cols="30" rows="10" placeholder="Hey tell us your corrections and suggestions we will revert back to you"></textarea>
+            <br>
+            <button class="btn btn-outline-primary mb-3" onclick="addComments()">Submit</button>
+          </div>
+        </div>
+        <div class="pdf">
+          <object data='http://127.0.0.1:8000/static/resumes/{{userId}}.pdf#toolbar=1' type='application/pdf'
+            width='100%' height='700px'> </object>
+        </div>
+      </div>
+
+
+      <div id="completed" style="display: none;">
+        <div class=" d-flex justify-content-center">
+          <h5 class="m-3">Completed</h5>
+          <!-- <button class="btn btn-info m-2" href="">View</button> -->
+          <button class="btn btn-success m-2" onclick="viewPdf({{userId}})">PDF</button>
+          <button class="btn btn-success m-2" onclick="viewWord({{userId}})">WORD</button>
+        </div>
+        <div class="pdf">
+          <object data='http://127.0.0.1:8000/static/resumes/{{userId}}.pdf#toolbar=1' type='application/pdf'
+            width='100%' height='700px'> </object>
+            <form action='/feedback' method="post">  {% csrf_token %}  
+              <br />   
+              <fieldset>    
+                <legend>     Your Feedback:    </legend>    
+                
+                </p>
+                <label for="hear">How did you hear about us?</label>
+                <input type="text"  placeholder="" id="hear" name="hear" style="font-size: 18pt; height: 40px; width:280px;"><br></br>
+                <label for="visit">Would you visit our site again?</label>
+                <input type="text"  placeholder="" id="visit" name="visit"style="font-size: 18pt; height: 40px; width:280px;"><br></br>
+                <label for="email">Recommend Your Friends:</label>
+                <input type="email"  placeholder="Enter Email" id="email" name="email"><br></br>
+                
+                <label for="friend">Rate our Services:</label>
+                <input type="number"  placeholder="1 to 10" id="rate" name="rate" min="0" max="10" maxlength="20" size="80"><br></br>
+                
+                <label for="editor">Feedback about Editor:</label>
+                <input type="text"  placeholder="" id="editor" name="editor" style="font-size: 18pt; height: 40px; width:280px;"><br></br>
+                
+                <label for="friend">Feedback about our website:</label>
+                <input type="text"  placeholder="" id="website" name="website" style="font-size: 18pt; height: 40px; width:280px;"><br></br>
+                
+                
+                <label>     
+                <input type="checkbox" name="subscribe" checked="checked" />      
+                Sign me up for email updates    
+                </label>    
+                <br /> 
+                <button class="btn btn-success" type="submit">submit feedback</button>
+              </fieldset>  
+            </form>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+  <script>
+    function validateFile() {
+        var fileInput =
+            document.getElementById('UserCV');
+          
+        var filePath = fileInput.value;
+      
+        // Allowing file type
+        var allowedExtensions =
+                /(\.pdf|\.new)$/i;
+          
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else
+        {
+          return true;
+        }
+    }
+  </script>
+  <script>
+    let status = "{{resume.1}}";
+    if (status.length == 0) {
+      document.getElementById("package").style.display = "block";
+    }
+    if (status == 1) {
+      document.getElementById("form").style.display = "block";
+    }
+    if (status == 2 || status == 3 || status == 4 || status == 5) {
+      document.getElementById("progress").style.display = "block";
+    }
+    if (status == 6) {
+      document.getElementById("preview").style.display = "block";
+    }
+    if(status==7){
+      document.getElementById("completed").style.display="block";
+    }
+  </script>
+
+  <script>
+    function purchase() {
+      let userId = document.getElementById('userId').value;
+      let packageId = document.getElementById('packageId').value;
+      $.ajax({
+        type: 'POST',
+        url: "/package",
+        data: { userId,packageId, csrfmiddlewaretoken: '{{ csrf_token }}' },
+        success: function (response) {
+          if (response.status == 'purchased') {
+            document.location.reload();
+          }
+        }
+      });
+    }
+
+    function acceptResume() {
+      let resumeId = document.getElementById('resumeId').value;
+      $.ajax({
+        type: 'POST',
+        url: "/acceptresume",
+        data: { resumeId, csrfmiddlewaretoken: '{{ csrf_token }}' },
+        success: function (response) {
+          if (response.status == 'accepted') {
+            document.location.reload();
+          }
+        }
+      });
+    }
+
+    function viewPdf(temp){
+      window.location.href = 'http://127.0.0.1:8000/static/resumes/' + temp + ".pdf"
+    }
+    function viewWord(temp){
+      window.location.href = 'http://127.0.0.1:8000/static/resumes/' + temp + ".docx"
+    }
+
+  </script>
+
+  <script>
+
+      function hideDisplay(divName){
+          var temp = document.getElementById("changesBtn");
+          if(temp.value==1){
+              document.getElementById(divName).style.display="none";
+              document.getElementById("changesBtn").value="0"
+          }
+          else if(temp.value==0){
+              document.getElementById(divName).style.display="block";
+              document.getElementById("changesBtn").value="1"
+          }
+      }
+
+      function addComments() {
+        let resumeId = document.getElementById('resumeId').value;
+        var comments= document.getElementById('comments').value;
+        console.log(comments)
+        $.ajax({
+          type: 'POST',
+          url: "/addcomments",
+          data: { resumeId,comments, csrfmiddlewaretoken: '{{ csrf_token }}' },
+          success: function (response) {
+            if (response.status == 'commented') {
+              document.location.reload();
+            }
+          }
+        });
+    }
+
+    $( "resumeForm" ).on( "submit", function(e) {
+      e.preventDefault();
+      var formData = new FormData($("#resumeForm"));
+      $.ajax({
+        type: "POST",
+        url: "/uploadcv",
+        data: formData,
+        success: function (response) {
+            if(response.status="uploaded"){
+                alert("new resume uploaded");
+            }
+        }
+      });
+    });
+
+
+  </script>
+
+</body>
+
+</html>

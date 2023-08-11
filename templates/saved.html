@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <style>
+            /* ===== Google Font Import - Poppins ===== */
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+    
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Poppins', sans-serif;
+            }
+    
+            body {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #4070f4;
+            }
+    
+            .container {
+                position: relative;
+                width: 1300px;
+                border-radius: 6px;
+                padding: 30px;
+                margin: 0 15px;
+                background-color: #fff;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    
+    
+                justify-content: space-between;
+                flex-direction: column;
+                display: flex;
+            }
+    
+            /* for heading size and colour */
+            .container header {
+                position: relative;
+                font-size: 25px;
+                font-weight: 600;
+                color: #333;
+            }
+    
+            /* for underline */
+            .container header::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -2px;
+                height: 3px;
+                width: 110px;
+                border-radius: 8px;
+                background-color: #4070f4;
+            }
+    
+            .container form {
+                position: relative;
+                margin-top: 16px;
+                min-height: 490px;
+                background-color: #fff;
+                /* overflow: hidden; */
+                overflow-y: scroll;
+    
+            }
+    
+            .container .title{
+                font-size: 20px;
+                font-weight: 300;
+                color: #333;
+                text-align: center;
+            }
+    
+            .container form::-webkit-scrollbar {
+                display: none;
+            }
+    
+            .container .nextBtn {
+                justify-content: flex-end;
+                display: flex;
+            }
+            .container .next,.prev{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+    
+            .table {
+                margin-left: auto;
+                margin-right: auto;
+            }
+    
+            .tab{
+                display: none;
+            }
+    
+            table,
+            th,
+            td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+    
+            /* .experience {
+                border-collapse: collapse;
+                width: 100%;
+                background-color: #ebe1e154;
+                border: ridge;
+            } */
+            .fa{
+                cursor: pointer;
+            }
+    
+    
+            @media (max-width: 750px) {
+                .container form {
+                    overflow-y: scroll;
+                }
+    
+                .container form::-webkit-scrollbar {
+                    display: none;
+                }
+    
+                form .fields .input-field {
+                    width: calc(100% / 2 - 15px);
+                }
+            }
+    
+            @media (max-width: 550px) {
+                form .fields .input-field {
+                    width: 100%;
+                }
+            }
+        </style>
+    
+        <div class="container">
+            <header>Form Filling</header>
+                <div class="tab" style="display: block;">
+                    <div class="personalinfo">
+                        <p class="title" >Personal Information</p><br>
+                        <table class="table">
+                            <tr>
+                                <th><label for="fname">First name:</label></th>
+                                <td><input type="text" id="fname" name="fname" value={{personalInfo.4}}></td>
+                            </tr>
+                            <tr>
+                                <th><label for="lname">Last name:</label></th>
+                                <td><input type="text" id="lname" name="lname" value={{personalInfo.3}}></td>
+                            </tr>
+                            <tr>
+                                <th><label for="mname">Middle name:</label></th>
+                                <td><input type="text" id="mname" name="mname" value={{personalInfo.5}}></td>
+                            </tr>
+                            <tr>
+                                <th><label for="email">Email:</label></th>
+                                <td><input type="email" id="email" name="email" value={{personalInfo.6}}></td>
+                            </tr>
+                            <tr>
+                                <th><label for="mobile">Mobile Number:</label></th>
+                                <td><input type="number" id="mobile" name="mobileNumber" value={{personalInfo.7}}></td>
+                            </tr>
+                            <tr>
+                                <th><label for="almobile">Alternate Mobile:</label></th>
+                                <td> <input type="number" id="almobile" name="alternateMobile" value={{personalInfo.8}}></td>
+                            </tr>
+
+
+                        </table>
+                        
+                
+                    </div><br>
+                    <br>
+                    
+                    
+                </div>
+                <div class="tab" style="display: block;" >
+                    <div class="education">
+                        <p class="title">Education</p>
+                        <input type="hidden" name="existingEducationRows" id="existingEducationRows" value={{EducationCount}}>
+                        <table class="table" align="center" class="EducationsTable" id="EducationsTable">
+                            <tbody id="EducationBody">
+                                <tr>
+                                    <th>Education Name</th>
+                                    <th>Institute Name</th>
+                                    <th>Institute City</th>
+                                    <th>Institue Country</th>
+                                    <th>Grade Percentage</th>
+                                    <th>start date</th>
+                                    <th>end date</th>
+                                    <th>Education Mode</th>
+                    
+                                </tr>
+    
+                                {%for education in educations%}
+                                <tr class="educationRow" id=educationRow{{education.0}}>
+                                    <input type="hidden" name="educationID" value={{education.0}}>
+                                    <td><input type="text" name="educationName" value="{{education.2}}"></td>
+                                    <td><input type="text" name="institutionName" value="{{education.3}}"></td>
+                                    <td><input type="text" name="institutionCity" value={{education.4}}></td>
+                                    <td><input type="text" name="institutionCountry" value={{education.5}}></td>
+                                    <td><input type="text" name="gradePercentage" value={{education.6}}></td>
+                                    <td><input type="text" name="educationStartYear" value={{education.7}}></td>
+                                    <td><input type="text" name="educationendYear" value={{education.8}}></td>
+                                    <td><input type="text" name="educationMode" value={{education.9}}></td>
+                        
+                                </tr>
+                                    
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+                        
+                    </div><br>
+                    <br>
+                    
+                    
+                </div>
+                <div class="tab" style="display: block;" >
+                    <div class="experience">
+                        <p class="title">Experience</p>
+                        <input type="hidden" name="existingExperienceRows" id="existingExperienceRows" value={{experienceCount}}>
+                        <table class="table" align="center" class="experienceTable" id="experienceTable">
+                            <tbody id="experienceBody">
+                                <tr>
+                                    <th>Company name</th>
+                                    <th>Designation</th>
+                                    <th>start year</th>
+                                    <th>End year</th>
+                                    <th>Experience type</th>
+                                </tr>
+                                {%for experience in experiences%}
+                                    <tr class="experienceRow" id=experienceRow{{experience.0}}>
+                                    <input type="hidden" name="experienceID" value={{experience.0}}>
+                                    <td><input type="text" name="experienceCompany" value="{{experience.2}}"></td>
+                                    <td><input type="text" name="experienceDesignation" value="{{experience.3}}"></td>
+                                    <td><input type="month" name="experienceStart" value="{{experience.4}}"></td>
+                                    <td><input type="text" name="experienceEnd" value={{experience.5}}></td>
+                                    <td><input type="text" name="experienceType" value="{{experience.6}}"></td>
+                                        
+                                    </tr>
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+              
+                    </div>
+                    
+                </div><br>
+                <br>
+
+    
+                <div class="tab" style="display: block;" >
+                    <div class="projects">
+                        <p class="title">Projects</p>
+                        <input type="hidden" name="existingProjectRows" id="existingProjectRows" value={{projectCount}}>
+                        <table class="table" align="center" class="projectsTable" id="projectsTable">
+                            <tbody id="projectBody">
+                                <tr>
+                                    <th>project title</th>
+                                    <th>role and responsibility</th>
+                                    <th>Technology used</th>
+                                    <th>Description</th>
+                                    <th>client</th>
+                                    <th>start date</th>
+                                    <th>end date</th>
+                                   
+                                </tr>
+                                
+                                {%for project in projects%}
+                                
+                                <tr class="projectRow" id=projectRow{{project.0}}>
+                                    <input type="hidden" name="projectID" value={{project.0}}>
+                                    <td><input type="text" name="projectTitle" value="{{project.2}}"></td>
+                                    <td><input type="text" name="projectRolesResp" value="{{project.3}}"></td>
+                                    <td><input type="text" name="projectTechnology" value="{{project.4}}"></td>
+                                    <td><input type="text" name="projectDescription" value="{{project.5}}"></td>
+                                    <td><input type="text" name="projectClient" value="{{project.6}}"></td>
+                                    <td><input type="text" name="projectStart" value={{project.7}}></td>
+                                    <td><input type="text" name="projectEnd" value={{project.8}}></td>
+                                    
+                                </tr>
+                                    
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+                        
+                    </div><br>
+                    <br>
+                    
+                    
+                </div>
+                <div class="tab" style="display: block;" >
+                    <div class="activities">
+                        <p class="title">Activities</p>
+                        <input type="hidden" name="existingActivitiesRows" id="existingActivitiesRows" value={{ActivitiesCount}}>
+                        <table class="table" align="center" class="ActivitiesTable" id="ActivitiesTable">
+                            <tbody id="ActivitiesBody">
+                                <tr>
+                                    <th>activity name</th>
+                                    <th>activity description</th>
+                                    <th>awards</th>
+                                    <th>papers submitted</th>
+                                    <th>any other information</th>
+                                    <th>languages known</th>
+                                    <th>known tools</th>
+                                    <th>known computer languages</th>
+                                    <th>activities col</th>
+                                   
+                                </tr>
+    
+                                {%for activity in activities%}
+                                <tr class="activitiesRow" id=activitiesRow{{activity.0}}>
+                                    <input type="hidden" name="activityID" value={{activity.0}}>
+                                    <td><input type="text" name="activityName" value="{{activity.2}}"></td>
+                                    <td><input type="text" name="activityDescription" value="{{activity.3}}"></td>
+                                    <td><input type="text" name="awards" value="{{activity.4}}"></td>
+                                    <td><input type="text" name="papersSubmitted" value="{{activity.5}}"></td>
+                                    <td><input type="text" name="anyOtherInformation" value="{{activity.6}}"></td>
+                                    <td><input type="text" name="languagesKnown" value="{{activity.7}}"></td>
+                                    <td><input type="text" name="knownTools" value="{{activity.8}}"></td>
+                                    <td><input type="text" name="knownComputerLanguages" value="{{activity.9}}"></td>
+                                    <td><input type="text" name="activitiesCol" value="{{activity.10}}"></td>    
+                                 
+                                </tr>
+                                    
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+                    </div><br>
+                    <br>
+                
+                </div>
+                <div class="tab" style="display: block;" >
+                    <div class="socialmedia">
+                        <p class="title">Social Media</p>
+                        <input type="hidden" name="12existingSocialMediaRows" id="existingSocialMediaRows" value={{SocialMediaCount}}>
+                        <table class="table" align="center" class="SocialMediaTable" id="SocialMediaTable">
+                            <tbody id="SocialMediaBody">
+                                <tr>
+                                    <th>social media</th>
+                                    <th>social media link</th>
+                                
+                                </tr>
+    
+                                {%for socialmedia in socialmedias%}
+                                <tr class="socialmediaRow" id=socialmediaRow{{socialmedia.0}}>
+                                    <input type="hidden" name="socialmediaID" value={{socialmedia.0}}>
+                                    <td><input type="text" name="socialMediaDescription" value={{socialmedia.2}}></td>
+                                    <td><input type="text" name="socialMediaLink" value={{socialmedia.3}}></td>
+                                   
+                                </tr>
+                                    
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+
+                    </div><br>
+                    <br>
+                    
+                </div>
+                <div class="tab" style="display: block;" >
+                    <div class="technicalskills">
+                        <p class="title">Technical Skills</p>
+                        <input type="hidden" name="existingTechSkillsRows" id="existingTechSkillsRows" value={{TechSkillsCount}}>
+                        <table class="table" align="center" class="TechSkillsTable" id="TechSkillsTable">
+                            <tbody id="TechSkillsBody">
+                                <tr>
+                                    <th>technical skills</th>
+                                </tr>
+    
+                                {%for technicalskill in technicalskills%}
+                                <tr class="technicalskillsRow" id=technicalskillsRow{{technicalskill.0}}>
+                                    <input type="hidden" name="techSkillId" value={{technicalskill.0}}>
+                                    <td><input type="text" name="techSkillDescription" value="{{technicalskill.2}}"></td>
+                                    
+                                </tr>
+                                    
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+                       
+                    </div><br>
+                    <br>
+                    
+                </div>
+                <div class="tab" style="display: block;" >
+                    <div class="professionalsummary">
+                        <p class="title">Professional Summary</p>
+                        <input type="hidden" name="existingProfSummRows" id="existingProfSummRows" value={{ProfSummCount}}>
+                        <table class="table" align="center" class="ProfSummTable" id="ProfSummTable">
+                            <tbody id="ProfSummBody">
+                                <tr>
+                                    <th>professional summary</th>
+                               
+                                </tr>
+    
+                                {%for professionalsummary in professionalsummaries%}
+                                <tr class="professionalsummaryRow" id=professionalsummaryRow{{professionalsummary.0}}>
+                                    <input type="hidden" name="profSummId" value={{professionalsummary.0}}>
+                                    <td><textarea name="" id="" cols="80" rows="10">{{professionalsummary.2}}</textarea></td>
+                                </tr>
+                                    
+                                {%endfor%}
+    
+                                <!-- dynamically addedrows -->
+                                <!-- -->
+    
+                            </tbody>
+                        </table>
+                        <button class="btn btn-danger" onclick="location.href = 'http://127.0.0.1:8000/authentication';">Logout</button>
+                    </div>
+                    
+                </div><br>
+                <br>
+                
+    
+                
+        
+        </div>
+        
+        
+    </body>
+</html>

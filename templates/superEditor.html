@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+
+    <title>Super Editor</title>
+</head>
+<body>
+
+    <style>
+    </style>
+
+    <input type="hidden" name="userId" value="{{userId}}" id="userId">
+    {%csrf_token%}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#"><img src="{% static 'images/cview_text.png' %}" alt="cview" height="40px"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+            </ul>
+            <span id="lastUpdated" class="mr-2"></span>
+            <button class="btn btn-outline-success mr-4" onClick="window.location.reload();">Refresh data</button>
+            <button class="btn btn-outline-danger my-2 my-sm-0" type="button"
+                onclick="location.href = 'http://127.0.0.1:8000/authentication';">Logout</button>
+        </div>
+    </nav>
+
+    <div class="mainContent">
+        <div class="mainComponents">
+            <div class="row">
+                <div class="col" >
+                    <h4 class="m-5">Resume orders</h4>
+                    <div class="firstTable" >
+                        <table id="userTable" class="m-5" width="90%">
+                            <thead>
+                                <tr>
+                                    
+                                    <th>firstname</th>
+                                    <th>lastname</th>
+                                    <th>mobile</th>
+                                    <th>status</th>
+                                    <th>editors</th>
+                                    <th>Action</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in resumes %}
+                                 <tr> <!-- onclick=fillFields("resumeId",{{row.0}}) -->
+                                    
+                                    <td>{{row.2}}</td>
+                                    <td>{{row.3}}</td>
+                                    <td>{{row.5}}</td>
+                                    <td>{{row.6}}</td>
+                                    <td>
+                                        <div class="assignDiv">
+                                            <select name="editorsList" id="editorsList{{row.0}}" class="btn btn-outline-dark mt-2">
+                                                <option value="none">select</option>
+                                                {%for editor in editors%}
+                                                    <option value="{{editor.0}}">{{editor.1}} {{editor.2}}-[ pending-{{editor.6}} ]  -( in Progress-{{editor.7}} )-( in review-{{editor.11}} )</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td class="btn btn-outline-primary mt-2" onclick="assignBtn({{row.0}})">Assign</td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+                <div class="col">
+                        <h2>summary piechart</h2>
+                        <div id="resumeSummaryPiechart" class="mt-5 ml-5">
+                        
+                        </div>
+                    
+                </div>
+            </div>
+            <h2 class="ml-5">Editors table</h2>
+            <div class="row">
+                <div class="col">
+                    <table id="editorTable" class="m-5" width="60%">
+                        <thead>
+                            <tr>
+                                
+                                <th>firstname</th>
+                                <th>lastname</th>
+                                <th>mobile</th>
+                                
+                                <th>Not started</th>
+                                <th>in progress</th>
+                                <th>Review</th>
+                                <th>completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in editors %}
+                            <tr onclick=piechart({{row.0}},"{{row.1}}",{{row.10}},{{row.6}},{{row.7}},{{row.11}},{{row.12}}) style="cursor: pointer">
+                                
+                                <td>{{row.1}}</td>
+                                <td>{{row.2}}</td>
+                                <td>{{row.3}}</td>
+                                
+                                <td>{{row.6}}</td>
+                                <td>{{row.7}}</td>
+                                <td>{{row.11}}</td>
+                                <td>{{row.12}}</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                        
+                    </table>
+                </div>
+        </div>
+        <h2 class="ml-5">Editor Time Spent Analysis</h2>
+        <div class="row">
+                <div class="col">
+                    <table id="editorTable" class="m-5" width="60%">
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>editor firstname</th><br>
+                                <th>edior lastname</th>
+                                <th>Time Spent(In Hours)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in statistics %}
+                            <tr onclick=piechart({{row.0}},"{{row.2}},{{row.3}},{{row.5}})>
+                                
+                                <td>{{row.0}}</td>
+                                <td>{{row.2}}</td>
+                                <td>{{row.3}}</td>
+                                <td>{{row.5}}</td>
+                                
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                        
+                    </table>
+                </div>
+        </div>
+                <div class="col">
+                    <input type="hidden" name="pendingAcceptanceResumes" id="pendingAcceptanceResumes" value="{{status.0}}">
+                    <input type="hidden" name="pendingResumes" id="pendingResumes" value="{{status.1}}">
+                    <input type="hidden" name="inProgressResumes" id="inProgressResumes" value="{{status.2}}">
+                    <input type="hidden" name="reviewResumes" id="reviewResumes" value="{{status.3}}">
+                    
+                    <!-- <h2>editor wise piechart</h2> -->
+                    <div id="piechart" class="mt-5 ml-5">
+                        
+                    </div>
+                </div>
+            </div>
+            <h2 class="m-5">All resume orders</h2> <br>
+            <div class="row">
+                <div class="col">
+                    <table id="allResumes" class="m-5" width="60%">
+                        <thead>
+                            <tr>
+                                <th>firstname</th>
+                                <th>lastname</th>
+                                <th>mobile</th>
+                                <th>Assign To</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in allResumes %}
+                            <tr>
+                                <input type="hidden" value="{{row.0}}">
+                                <td>{{row.1}}</td>
+                                <td>{{row.2}}</td>
+                                <td>{{row.3}}</td>
+                                <td>{{row.4}}</td>
+                                <td>{{row.5}}</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                        
+                    </table>
+                </div>
+                <div class="col">
+                    
+                    <div id="allResumesChart" class="mt-5 ml-5">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        function piechart(editorId,firstname,notAccepted,pending,inProgress,inReview,completed){
+            // fillFields("assignToId",editorId)
+
+
+            google.load('visualization', '1.0', {
+                'packages': ['corechart']
+            });
+            google.setOnLoadCallback(drawChart);
+            //drawChart();
+
+            function drawChart() {
+
+                // Create the data table.
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'status');
+                data.addColumn('number', 'Count');
+                data.addRows([
+                    ['not accepted',Number(notAccepted)],
+                    ['Pending', Number(pending)],
+                    ['In progress', Number(inProgress)],
+                    ['In review', Number(inReview)],
+                    ['Completed', Number(completed)]
+                ]);
+
+                // Set chart options
+                var options = {
+                    'width': 400,
+                    'height': 300,
+                    'title':`Summary of editor ${editorId} ${firstname}`
+                };
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                function selectHandler() {
+                    var selectedItem = chart.getSelection()[0];
+                    if (selectedItem) {
+                        var status = data.getValue(selectedItem.row, 0);
+                        alert('The user selected ' + status);
+                    }
+                }
+                google.visualization.events.addListener(chart, 'select', selectHandler);
+                chart.draw(data, options);
+            }
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#editorTable').DataTable();
+            $('#userTable').DataTable({
+            });
+            $('#allResumes').DataTable({
+            });
+
+            date = new Date();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            var time = "Last updated at "+ hours + ':' + minutes + ' ' + ampm;
+            document.getElementById('lastUpdated').innerHTML=time
+        });
+    </script>
+
+    <script>
+        // function fillFields(fieldName,fieldId){
+        //     if(fieldName=="resumeId"){
+        //         document.getElementById('resumeId').value=fieldId;
+        //     }
+        //     else if(fieldName=="assignToId"){
+        //         document.getElementById('assignToId').value=fieldId;
+        //     }
+        // }
+        // function assign(){
+        //     resumeId=document.getElementById('resumeId').value;
+        //     assignToId=document.getElementById('assignToId').value;
+        //     superEditorId=document.getElementById('superEditorId').value;
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: "/assign",
+        //         data: {resumeId,assignToId,superEditorId,csrfmiddlewaretoken: '{{ csrf_token }}' },
+        //         success: function (response) {
+        //             if(response.status=='assigned'){
+        //                 document.location.reload();
+        //             }
+        //         }
+        //     });
+        // }
+    </script>
+    <script>
+            google.load('visualization', '1.0', {
+                'packages': ['corechart']
+            });
+            google.setOnLoadCallback(drawChart);
+            //drawChart();
+
+            function drawChart() {
+
+                // Create the data table.
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'status');
+                data.addColumn('number', 'Count');
+                data.addRows([
+                    ['form filling',Number({{summary.0}})],
+                    ['pending for assignment', Number({{summary.1}})],
+                    ['pending for acceptance', Number({{summary.2}})],
+                    ['pending for editing', Number({{summary.3}})],
+                    ['editing in progress', Number({{summary.4}})],
+                    ['pending for review', Number({{summary.5}})],
+                    ['completed', Number({{summary.6}})],
+                ]);
+
+                // Set chart options
+                var options = {
+                    'width': 400,
+                    'height': 300,
+                    'title':`Summary of Resumes`
+                };
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.PieChart(document.getElementById('resumeSummaryPiechart'));
+
+                function selectHandler() {
+                    var selectedItem = chart.getSelection()[0];
+                    if (selectedItem) {
+                        var status = data.getValue(selectedItem.row, 0);
+                        alert('The user selected ' + status);
+                    }
+                }
+                google.visualization.events.addListener(chart, 'select', selectHandler);
+                chart.draw(data, options);
+            }
+    </script>
+
+    
+    
+    <script>
+        function assignBtn(resumeId){
+            var assignToId = document.getElementById('editorsList'+resumeId).value;
+            var userId=document.getElementById('userId').value;
+
+            if(assignToId!="none"){
+                $.ajax({
+                    type: 'POST',
+                    url: "/assign",
+                    data: {resumeId,assignToId,userId,csrfmiddlewaretoken: '{{ csrf_token }}' },
+                    success: function (response) {
+                        if(response.status=='assigned'){
+                            document.location.reload();
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>welcome to cview</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+
+</head>
+
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: #e35869;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        .login-form {
+            background: #fff;
+            width: 500px;
+            margin: 65px auto;
+            display: -webkit-box;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            flex-direction: column;
+            border-radius: 4px;
+            box-shadow: 0 2px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-form h1 {
+            padding: 35px 35px 0 35px;
+            font-weight: 300;
+        }
+
+        .content1 {
+            padding: 35px;
+            text-align: center;
+            display: block;
+            
+        }
+        .content2 {
+            padding: 35px;
+            text-align: center;
+            display: none;
+        }
+
+        .login-form .input-field {
+            padding: 12px 5px;
+        }
+
+        .login-form .input-field input {
+            font-size: 16px;
+            display: block;
+            font-family: 'Rubik', sans-serif;
+            width: 100%;
+            padding: 10px 1px;
+            border: 0;
+            border-bottom: 1px solid #747474;
+            outline: none;
+            -webkit-transition: all .2s;
+            transition: all .2s;
+        }
+
+        .login-form .input-field input::-webkit-input-placeholder {
+            text-transform: uppercase;
+        }
+
+        .login-form .input-field input::-moz-placeholder {
+            text-transform: uppercase;
+        }
+
+        .login-form .input-field input:-ms-input-placeholder {
+            text-transform: uppercase;
+        }
+
+        .login-form .input-field input::-ms-input-placeholder {
+            text-transform: uppercase;
+        }
+
+        .login-form .input-field input::placeholder {
+            text-transform: uppercase;
+        }
+
+        .login-form .input-field input:focus {
+            border-color: #222;
+        }
+
+        .login-form a.link {
+            text-decoration: none;
+            color: #747474;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .login-form .action {
+            display: -webkit-box;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            flex-direction: row;
+        }
+
+        .login-form .action button {
+            width: 100%;
+            border: none;
+            padding: 18px;
+            font-family: 'Rubik', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            background: #e8e9ec;
+            color: #777;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 0;
+            letter-spacing: 0.2px;
+            outline: 0;
+            -webkit-transition: all .3s;
+            transition: all .3s;
+        }
+
+        .login-form .action button:hover {
+            background: #d8d8d8;
+        }
+
+        .login-form .action button:nth-child(1) {
+            background: #2d3b55;
+            color: #fff;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 4px;
+        }
+
+        .login-form .action button:nth-child(1):hover {
+            background: #3984ed;
+        }
+    </style>
+    <div class="login-form">        
+            <div class="action">
+                <button type="button" onclick="login()">Sign in</button>
+                <button type="button" onclick="register()">Register</button>
+            </div>
+
+        <form action="/user" method="POST">
+          {% csrf_token %}
+              <div class="content1" id="content1">
+                  <div class="input-field">
+                      <input type="text" placeholder="email" autocomplete="nope" name="email" id="email">
+                  </div>
+                  <div class="input-field">
+                      <input type="text" placeholder="Password" autocomplete="nope" name="password" id="password">
+                  </div>
+                  <a href="#" class="link"></a>
+                  <p>{{error}}</p>
+                  <br>
+                  <div class="action">
+                      <button type="submit">Login</button>
+                  </div>
+              </div>
+        </form>
+
+        <form action="/registration" method="POST" onsubmit="return validateRegistration()">
+          {% csrf_token %}
+            <div class="content2" id="content2">
+                <div class="input-field">
+                    <input type="text" placeholder="firstname" autocomplete="nope" name="firstname" id="firstname" required>
+                </div>
+                <div class="input-field">
+                    <input type="text" placeholder="middle name" autocomplete="nope" name="middlename" id="middlename">
+                </div>
+                <div class="input-field">
+                    <input type="text" placeholder="lastname" autocomplete="nope" name="lastname" id="lastname" required>
+                </div>
+                <div class="input-field">
+                    <input type="email" placeholder="email" autocomplete="nope" name="email" id="email" required>
+                </div>
+                <div class="input-field">
+                    <input type="text" placeholder="mobile" autocomplete="nope" name="mobile" id="mobile" required>
+                </div>
+                <div class="input-field">
+                    <input type="text" placeholder="alternate mobile" autocomplete="nope" name="alternateMobile" id="alternateMobile">
+                </div>
+                <div class="input-field">
+                    <input type="text" placeholder="Password"  name="opassword" id="opassword" required>
+                </div>
+                <div class="input-field">
+                    <input type="text" placeholder="confirm Password"  name="cpassword" id="cpassword" required>
+                </div>
+                <br>
+                <div class="action">
+                    <button type="submit">Sign Up</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function register(){
+            var register = document.getElementById('content2')
+            register.style.display='block';
+            var login = document.getElementById('content1')
+            login.style.display='none';
+        }
+        function login(){
+            var register = document.getElementById('content2')
+            register.style.display='none';
+            var login = document.getElementById('content1')
+            login.style.display='block';
+        }
+        function validateRegistration(){
+            var username = document.getElementById('username');
+            var email = document.getElementById('email');
+            var opassword = document.getElementById('opassword');
+            var cpassword = document.getElementById('cpassword');
+            if(opassword.value!=cpassword.value){
+                alert('password and confirm password must be same')
+                cpassword.value="";
+                return false;
+            }
+            if(isNaN(username.value)){
+                username.value="";
+                alert('user ID must be a number')
+                return false;
+            }
+            return true;
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <title>cview-Form filling</title>
+</head>
+
+<body>
+    <style>
+        /* ===== Google Font Import - Poppins ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #4070f4;
+        }
+
+        .container {
+            position: relative;
+            width: 1300px;
+            border-radius: 6px;
+            padding: 30px;
+            margin: 0 15px;
+            background-color: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+
+            justify-content: space-between;
+            flex-direction: column;
+            display: flex;
+        }
+
+        /* for heading size and colour */
+        .container header {
+            position: relative;
+            font-size: 25px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* for underline */
+        .container header::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            height: 3px;
+            width: 110px;
+            border-radius: 8px;
+            background-color: #4070f4;
+        }
+
+        .container form {
+            position: relative;
+            margin-top: 16px;
+            min-height: 490px;
+            background-color: #fff;
+            /* overflow: hidden; */
+            overflow-y: scroll;
+
+        }
+
+        .container .title{
+            font-size: 20px;
+            font-weight: 300;
+            color: #333;
+        }
+
+        .container form::-webkit-scrollbar {
+            display: none;
+        }
+
+        .container .nextBtn {
+            justify-content: flex-end;
+            display: flex;
+        }
+        .container .next,.prev{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .table {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tab{
+            display: none;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        /* .experience {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #ebe1e154;
+            border: ridge;
+        } */
+        .fa{
+            cursor: pointer;
+        }
+
+
+        @media (max-width: 750px) {
+            .container form {
+                overflow-y: scroll;
+            }
+
+            .container form::-webkit-scrollbar {
+                display: none;
+            }
+
+            form .fields .input-field {
+                width: calc(100% / 2 - 15px);
+            }
+        }
+
+        @media (max-width: 550px) {
+            form .fields .input-field {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <div class="container">
+        <header>Form Filling</header>
+
+        <form action="saved" id="myform" method="POST">
+            <div class="tab" style="display: block;">
+                <div class="personalinfo">
+                    <span class="title">Personal Information</span><br>
+                    <input type="hidden" id="usertype" name="usertype" value={{personalInfo.1}}><br>
+                    <input type="hidden" id="userrole" name="userrole" value={{personalInfo.2}}><br>
+                   
+                    <label for="fname">First name:</label>
+                    <input type="text" id="fname" name="fname" value={{personalInfo.4}}><br>
+                    <label for="lname">Last name:</label>
+                    <input type="text" id="lname" name="lname" value={{personalInfo.3}}><br>
+                    <label for="mname">Middle name:</label>
+                    <input type="text" id="mname" name="mname" value={{personalInfo.5}}><br>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value={{personalInfo.6}}><br>
+                    <label for="mobile">Mobile Number:</label>
+                    <input type="number" id="mobile" name="mobileNumber" value={{personalInfo.7}}><br>
+                    <label for="almobile">Alternate Mobile:</label>
+                    <input type="number" id="almobile" name="alternateMobile" value={{personalInfo.8}}><br>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(1)">next</button>
+                </div>
+                
+            </div>
+            <div class="tab" >
+                <div class="education">
+                    <span class="title">Education</span>
+                    <input type="hidden" name="existingEducationRows" id="existingEducationRows" value={{educations|length}}>
+                    <table class="table" align="center" class="EducationsTable" id="EducationsTable">
+                        <tbody id="EducationBody">
+                            <tr>
+                                <th>Education Name</th>
+                                <th>Institute Name</th>
+                                <th>Institute City</th>
+                                <th>Institue Country</th>
+                                <th>Grade Percentage</th>
+                                <th>start date</th>
+                                <th>end date</th>
+                                <th>Education Mode</th>
+                                <th>Delete</th>
+                            </tr>
+
+                            {%for education in educations%}
+                            <tr class="educationRow" id=tbl_user_education{{education.0}}>
+                                <input type="hidden" name="educationID" value={{education.0}}>
+                                <td><input type="text" name="educationName" value="{{education.2}}"></td>
+                                <td><input type="text" name="institutionName" value="{{education.3}}"></td>
+                                <td><input type="text" name="institutionCity" value={{education.4}}></td>
+                                <td><input type="text" name="institutionCountry" value={{education.5}}></td>
+                                <td><input type="text" name="gradePercentage" value={{education.6}}></td>
+                                <td><input type="text" name="educationStartYear" value={{education.7}}></td>
+                                <td><input type="text" name="educationendYear" value={{education.8}}></td>
+                                <td><input type="text" name="educationMode" value={{education.9}}></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_education','Education_Id',{{education.0}})"></i></td>
+                            </tr>
+                                
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addRow('tbl_user_education')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(0)">previous</button>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(2)">next</button>
+                </div>
+                
+            </div>
+            <div class="tab" >
+                <div class="experience">
+                    <span class="title">Experience</span>
+                    <input type="hidden" name="existingExperienceRows" id="existingExperienceRows" value={{experiences|length}}>
+                    <table class="table" align="center" class="experienceTable" id="experienceTable">
+                        <tbody id="experienceBody">
+                            <tr>
+                                <th>Company name</th>
+                                <th>Designation</th>
+                                <th>start year</th>
+                                <th>End year</th>
+                                <th>Experince Type</th>
+                                <th>delete</th>
+                            </tr>
+                            {%for experience in experiences%}
+                                <tr class="experienceRow" id=tbl_user_experience{{experience.0}}>
+                                    <input type="hidden" name="experienceID" value={{experience.0}}>
+                                    <td><input type="text" name="experienceCompany" value="{{experience.2}}"></td>
+                                    <td><input type="text" name="experienceDesignation" value="{{experience.3}}"></td>
+                                    <td><input type="month" name="experienceStart" value="{{experience.4}}"></td>
+                                    <td><input type="text" name="experienceEnd" value={{experience.5}}></td>
+                                    <td><input type="text" name="experienceType" value="{{experience.6}}"></td>
+                                    <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_experience','User_Exp_ID',{{experience.0}})"></i></td>
+                                </tr>
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    
+                    <button type="button" onclick="addRow('tbl_user_experience')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(1)">previous</button>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(3)">next</button>
+                </div>
+                
+            </div>
+
+            <div class="tab" >
+                <div class="projects">
+                    <span class="title">Projects</span>
+                    <input type="hidden" name="existingProjectRows" id="existingProjectRows" value={{projects|length}}>
+                    <table class="table" align="center" class="projectsTable" id="projectsTable">
+                        <tbody id="projectBody">
+                            <tr>
+                                <th>project title</th>
+                                <th>role and responsibility</th>
+                                <th>Technology used</th>
+                                <th>Description</th>
+                                <th>client</th>
+                                <th>start date</th>
+                                <th>end date</th>
+                                <th>Delete</th>
+                            </tr>
+                            
+                            {%for project in projects%}
+                            <tr class="projectRow" id=tbl_user_projects{{project.0}}>
+                                <input type="hidden" name="projectID" value={{project.0}}>
+                                <td><input type="text" name="projectTitle" value="{{project.2}}"></td>
+                                <td><input type="text" name="projectRolesResp" value="{{project.3}}"></td>
+                                <td><input type="text" name="projectTechnology" value="{{project.4}}"></td>
+                                <td><input type="text" name="projectDescription" value="{{project.5}}"></td>
+                                <td><input type="text" name="projectClient" value="{{project.6}}"></td>
+                                <td><input type="text" name="projectStart" value={{project.7}}></td>
+                                <td><input type="text" name="projectEnd" value={{project.8}}></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_projects','User_Project_ID',{{project.0}})"></i></td>
+                            </tr>
+                                
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addRow('tbl_user_projects')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(2)">previous</button>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(4)">next</button>
+                </div>
+                
+            </div>
+            <div class="tab" >
+                <div class="activities">
+                    <span class="title">Activities</span>
+                    <input type="hidden" name="existingActivitiesRows" id="existingActivitiesRows" value={{activities|length}}>
+                    <table class="table" align="center" class="ActivitiesTable" id="ActivitiesTable">
+                        <tbody id="ActivitiesBody">
+                            <tr>
+                                <th>activity name</th>
+                                <th>activity description</th>
+                                <th>awards</th>
+                                <th>papers submitted</th>
+                                <th>any other information</th>
+                                <th>languages known</th>
+                                <th>known tools</th>
+                                <th>known computer languages</th>
+                                <th>activities col</th>
+                                <th>Delete</th>
+                            </tr>
+
+                            {%for activity in activities%}
+                            <tr class="activitiesRow" id=tbl_user_activities{{activity.0}}>
+                                <input type="hidden" name="activityID" value={{activity.0}}>
+                                <td><input type="text" name="activityName" value="{{activity.2}}"></td>
+                                <td><input type="text" name="activityDescription" value="{{activity.3}}"></td>
+                                <td><input type="text" name="awards" value="{{activity.4}}"></td>
+                                <td><input type="text" name="papersSubmitted" value="{{activity.5}}"></td>
+                                <td><input type="text" name="anyOtherInformation" value="{{activity.6}}"></td>
+                                <td><input type="text" name="languagesKnown" value="{{activity.7}}"></td>
+                                <td><input type="text" name="knownTools" value="{{activity.8}}"></td>
+                                <td><input type="text" name="knownComputerLanguages" value="{{activity.9}}"></td>
+                                <td><input type="text" name="activitiesCol" value="{{activity.10}}"></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_activities','User_Activity_Id',{{activity.0}})"></i></td>
+                            </tr>
+                                
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addRow('tbl_user_activities')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(3)">previous</button>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(5)">next</button>
+                </div>
+                
+            </div>
+            <div class="tab" >
+                <div class="socialmedia">
+                    <span class="title">Social Media</span>
+                    <input type="hidden" name="existingSocialMediaRows" id="existingSocialMediaRows" value={{socialmedias|length}}>
+                    <table class="table" align="center" class="SocialMediaTable" id="SocialMediaTable">
+                        <tbody id="SocialMediaBody">
+                            <tr>
+                                <th>social media</th>
+                                <th>social media link</th>
+                                <th>Delete</th>
+                            </tr>
+
+                            {%for socialmedia in socialmedias%}
+                            <tr class="socialmediaRow" id=tbl_user_scocial_media{{socialmedia.0}}>
+                                <input type="hidden" name="socialmediaID" value={{socialmedia.0}}>
+                                <td><input type="text" name="socialMediaDescription" value={{socialmedia.2}}></td>
+                                <td><input type="text" name="socialMediaLink" value={{socialmedia.3}}></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_scocial_media','User_SocMedia_Id',{{socialmedia.0}})"></i></td>
+                            </tr>
+                                
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addRow('tbl_user_scocial_media')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(4)">previous</button>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(6)">next</button>
+                </div>
+                
+            </div>
+            <div class="tab" >
+                <div class="technicalskills">
+                    <span class="title">Technical Skills</span>
+                    <input type="hidden" name="existingTechSkillsRows" id="existingTechSkillsRows" value={{technicalskills|length}}>
+                    <table class="table" align="center" class="TechSkillsTable" id="TechSkillsTable">
+                        <tbody id="TechSkillsBody">
+                            <tr>
+                                <th>technical skill description</th>
+                                <th>Delete</th>
+                            </tr>
+
+                            {%for technicalskill in technicalskills%}
+                            <tr class="technicalskillsRow" id=tbl_user_tech_skills{{technicalskill.0}}>
+                                <input type="hidden" name="techSkillId" value={{technicalskill.0}}>
+                                <td><input type="text" name="techSkillDescription" value="{{technicalskill.2}}"></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_tech_skills','Tech_Skills_ID',{{technicalskill.0}})"></i></td>
+                            </tr>
+                                
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addRow('tbl_user_tech_skills')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(5)">previous</button>
+                </div>
+                <div class="next">
+                    <button class="nextBtn" type="button" onclick="nav(7)">next</button>
+                </div>
+                
+            </div>
+            <div class="tab" >
+                <div class="professionalsummary">
+                    <span class="title">Professional Summary</span>
+                    <input type="hidden" name="existingProfSummRows" id="existingProfSummRows" value={{professionalsummaries|length}}>
+                    <table class="table" align="center" class="ProfSummTable" id="ProfSummTable">
+                        <tbody id="ProfSummBody">
+                            <tr>
+                                <th>professional summary</th>
+                                <th>Delete</th>
+                            </tr>
+
+                            {%for professionalsummary in professionalsummaries%}
+                            <tr class="professionalsummaryRow" id=tbl_user_prof{{professionalsummary.0}}>
+                                <input type="hidden" name="profSummId" value={{professionalsummary.0}}>
+                                <td><input type="text" name="profSummary" value="{{professionalsummary.2}}"></td>
+                                <td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRowAjax('tbl_user_prof','User_Prof_Id',{{professionalsummary.0}})"></i></td>
+                            </tr>
+                                
+                            {%endfor%}
+
+                            <!-- dynamically addedrows -->
+                            <!-- -->
+
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="addRow('tbl_user_prof')">ADD ROW</button>
+                </div>
+                <div class="prev">
+                    <button class="nextBtn" type="button" onclick="nav(6)">previous</button>
+                </div>
+                
+                <div class="next">
+                    <div class="hiddenInput" id="hiddenInput">
+                        <input type="hidden" name="userID" value={{userID}}>
+                        <input type="hidden" name="resumeId" value="{{resumeId}}">
+                    </div>
+                    <button type="button" onclick=submitForm("save")>save form </button>
+                    <button type="button" onclick=submitForm("submit")>Final Submit</button>
+                </div>
+                
+            </div>
+            
+
+            
+            {%csrf_token%}
+        </form>
+    </div>
+
+    <script>
+        //rows for each table
+        projectRowNew=  `
+                        <input type="hidden" name="projectID" value="new">
+                        <td><input type="text" name="projectTitle" value></td>
+                        <td><input type="text" name="projectRolesResp" value></td>
+                        <td><input type="text" name="projectTechnology" value></td>
+                        <td><input type="text" name="projectDescription" value></td>
+                        <td><input type="text" name="projectClient" value></td>
+                        <td><input type="month" name="projectStart" value></td>
+                        <td><input type="month" name="projectEnd" value></td>`;
+
+        experienceRowNew=  `
+                        <input type="hidden" name="experienceID" value="new">
+                        <td><input type="text" name="experienceCompany" value></td>
+                        <td><input type="text" name="experienceDesignation" value></td>
+                        <td><input type="month" name="experienceStart" value></td>
+                        <td><input type="month" name="experienceEnd" value></td>
+                        <td><input type="text" name="experienceType" value></td>`;
+        educationRowNew=   `
+                                <input type="hidden" name="educationID" value="new">
+                                <td><input type="text" name="educationName" value</td>
+                                <td><input type="text" name="institutionName" value></td>
+                                <td><input type="text" name="institutionCity" value</td>
+                                <td><input type="text" name="institutionCountry" value</td>
+                                <td><input type="text" name="gradePercentage" value</td>
+                                <td><input type="text" name="educationStartYear" value</td>
+                                <td><input type="text" name="educationendYear" value</td>
+                                <td><input type="text" name="educationMode" value</td>
+                        `;
+        techskillRowNew=`   
+                            
+                            <input type="hidden" name="techSkillId" value="new">
+                            <td><input type="text" name="techSkillDescription" value></td>
+                    `;
+        activityRowNew=`
+                                <input type="hidden" name="activityID" value="new">
+                                <td><input type="text" name="activityName" value</td>
+                                <td><input type="text" name="activityDescription" value></td>
+                                <td><input type="text" name="awards" value></td>
+                                <td><input type="text" name="papersSubmitted" value</td>
+                                <td><input type="text" name="anyOtherInformation" value</td>
+                                <td><input type="text" name="languagesKnown" value</td>
+                                <td><input type="text" name="knownTools" value</td>
+                                <td><input type="text" name="knownComputerLanguages" value</td>
+                                <td><input type="text" name="activitiesCol" value</td>
+        `;
+        socialMediaRowNew=`
+                                <input type="hidden" name="socialmediaID" value="new">
+                                <td><input type="text" name="socialMediaDescription" value</td>
+                                <td><input type="text" name="socialMediaLink" value</td>
+        `;
+
+        profSummRowNew = `
+                                <input type="hidden" name="profSummId" value="new">
+                                <td><input type="text" name="profSummary" value</td>
+        
+        `;
+
+
+        let existingEducationRows = document.getElementById('existingEducationRows').value;
+        let existingProjectRows = document.getElementById('existingProjectRows').value;
+        let existingExperienceRows = document.getElementById('existingExperienceRows').value;
+        let existingActivitiesRows = document.getElementById('existingActivitiesRows').value;
+        let existingSocialMediaRows = document.getElementById('existingSocialMediaRows').value;
+        let existingTechSkillsRows = document.getElementById('existingTechSkillsRows').value;
+        let existingProfSummRows = document.getElementById('existingProfSummRows').value;
+        let totalProjectRows =  document.getElementById('existingProjectRows').value
+        let totalEducationRows = document.getElementById('existingEducationRows').value
+        let totalExperienceRows = document.getElementById('existingExperienceRows').value
+        let totalActivityRows = document.getElementById('existingActivitiesRows').value
+        let totalSocialMediaRows = document.getElementById('existingSocialMediaRows').value
+        let totalTechSkillsRows = document.getElementById('existingTechSkillsRows').value
+        let totalProfSummRows = document.getElementById('existingProfSummRows').value
+        if(existingProjectRows==0){
+            addRow('tbl_user_projects');
+        }
+        if(existingEducationRows==0){
+            addRow('tbl_user_education');
+        }
+        if(existingExperienceRows==0){
+            addRow('tbl_user_experience');
+        }
+        if(existingActivitiesRows==0){
+            addRow('tbl_user_activities')
+        }
+        if(existingSocialMediaRows==0){
+            addRow('tbl_user_scocial_media')
+        }
+        if(existingTechSkillsRows==0){
+            addRow('tbl_user_tech_skills')
+        }
+        if(existingProfSummRows==0){
+            addRow('tbl_user_prof')
+
+        }
+        function addRow(temp) {
+            if(temp=='tbl_user_projects'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_projects"+(++totalProjectRows))
+                newRow.innerHTML = projectRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("projectBody").appendChild(newRow);
+            }
+            if(temp=='tbl_user_education'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_education"+(++totalEducationRows))
+                newRow.innerHTML = educationRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("EducationBody").appendChild(newRow);
+            }
+            if(temp=='tbl_user_experience'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_experience"+(++totalExperienceRows))
+                newRow.innerHTML =experienceRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("experienceBody").appendChild(newRow);
+            }
+            if(temp=='tbl_user_activities'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_activities"+(++totalActivityRows))
+                newRow.innerHTML = activityRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("ActivitiesBody").appendChild(newRow);
+            }
+            if(temp=='tbl_user_scocial_media'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_scocial_media"+(++totalSocialMediaRows))
+                newRow.innerHTML = socialMediaRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("SocialMediaBody").appendChild(newRow);
+            }
+            if(temp=='tbl_user_tech_skills'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_tech_skills"+(++totalTechSkillsRows))
+                newRow.innerHTML = techskillRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("TechSkillsBody").appendChild(newRow);
+            }
+            if(temp=='tbl_user_prof'){
+                const newRow = document.createElement("tr");
+                newRow.className = temp;
+                newRow.setAttribute('id',"tbl_user_prof"+(++totalProfSummRows))
+                newRow.innerHTML = profSummRowNew;
+                newRow.innerHTML+= `<td><i class="fa fa-trash" aria-hidden="true" onclick="deleteRow('${temp}','${newRow.id}')"></i></td>`;
+                document.getElementById("ProfSummBody").appendChild(newRow);
+            }
+        }
+
+        function deleteRow(tableName,iD) {
+            let element = document.getElementById(iD);
+            element.remove();
+                    if(tableName=='tbl_user_projects'){
+                        totalProjectRows--; 
+                    }
+                    else if(tableName=='tbl_user_education'){
+                        totalEducationRows--; 
+                    }
+                    else if(tableName=='tbl_user_experience'){
+                        totalExperienceRows--;
+                    }
+                    else if(tableName=='tbl_user_activities'){
+                        totalActivityRows--;
+                    }
+                    else if(tableName=='tbl_user_scocial_media'){
+                        totalSocialMediaRows--;
+                    }
+                    else if(tableName=='tbl_user_tech_skills'){
+                        totalTechSkillsRows--;
+                    }
+                    else if(tableName=='tbl_user_prof'){
+                        totalProfSummRows--;
+                    }
+            
+
+        }
+        function nav(temp){
+            var tab = document.getElementsByClassName("tab");
+            for(var i=0;i<tab.length;i++){
+                tab[i].style.display="none";
+            }
+            tab[temp].style.display="block";
+        }
+
+        
+
+
+    </script>
+    <!-- ajax code -->
+    <script>
+        function deleteRowAjax(tableName,columnName,Id){
+            $.ajax({
+                type: 'POST',
+                url: "/ajax",
+                data: {tableName,columnName,Id,csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: function (response) {
+                    if(response.status=='deleted'){
+                        if(tableName=='tbl_user_projects'){
+                            totalProjectRows--; 
+                        }
+                        else if(tableName=='tbl_user_education'){
+                            totalEducationRows--; 
+                        }
+                        else if(tableName=='tbl_user_experience'){
+                            totalExperienceRows--;
+                        }
+                        else if(tableName=='tbl_user_activities'){
+                            totalActivityRows--;
+                        }
+                        else if(tableName=='tbl_user_scocial_media'){
+                            totalSocialMediaRows--;
+                        }
+                        else if(tableName=='tbl_user_tech_skills'){
+                            totalTechSkillsRows--;
+                        }
+                        else if(tableName=='tbl_user_prof'){
+                            totalProfSummRows--;
+                        }
+                        const element = document.getElementById(tableName.toString()+Id.toString());
+                        element.remove();
+                        console.log(tableName.toString()+Id.toString()+" removed")
+                    }
+                }
+            });
+        }
+    </script>
+    <script>
+        function submitForm(temp){
+            if(temp=="save"){
+                var element = document.createElement("INPUT");
+                element.setAttribute("type", "hidden");
+                element.setAttribute("value","savedByUser");
+                element.setAttribute("name","typeOfSave");
+                document.getElementById('hiddenInput').appendChild(element);
+            }
+            else if(temp=="submit"){
+                var element = document.createElement("INPUT");
+                element.setAttribute("type", "hidden");
+                element.setAttribute("value","submitedByUser");
+                element.setAttribute("name","typeOfSave");
+                document.getElementById('hiddenInput').appendChild(element);
+            }
+            document.getElementById('myform').submit();
+        }
+    </script>
+    
+</body>
+
+</html>
